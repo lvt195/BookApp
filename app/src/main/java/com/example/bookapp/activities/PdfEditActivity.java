@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +43,7 @@ public class PdfEditActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 //        //lay tu AdapterPdfAdmin
-//        bookId = getIntent().getStringExtra("bookId");
+        bookId = getIntent().getStringExtra("bookId");
 
 
 

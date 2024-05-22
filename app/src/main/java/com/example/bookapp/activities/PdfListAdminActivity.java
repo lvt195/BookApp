@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,7 +30,7 @@ public class PdfListAdminActivity extends AppCompatActivity {
 
     private AdapterPdfAdmin adapterPdfAdmin;
 
-    private String categoryId, categoryTitle;
+    private String categoryId, categoryTitle, bookTitle;
 
     public static final String TAG="PDF_LIST_TAG";
 
@@ -44,6 +44,7 @@ public class PdfListAdminActivity extends AppCompatActivity {
         Intent intent = getIntent();
         categoryId = intent.getStringExtra("categoryId");
         categoryTitle = intent.getStringExtra("categoryTitle");
+        bookTitle = intent.getStringExtra("bookTitle");
 
         //gan cho category
         binding.subTitletv.setText(categoryTitle);

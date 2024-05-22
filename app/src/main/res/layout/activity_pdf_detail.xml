@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/back01"
-    tools:context=".PdfDetailActivity">
+    tools:context=".activities.PdfDetailActivity">
 
 <!--    toolbar-->
     <RelativeLayout
@@ -22,6 +22,7 @@
             android:layout_marginStart="10dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_back_white"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,11 +30,12 @@
             android:text="Book Detail"
             android:textColor="@color/white"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
     </RelativeLayout>
 
 <!--    THong tin-->
     <ScrollView
+        android:layout_above="@+id/bookOptionsLl"
         android:layout_below="@+id/toolbarRl"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -51,7 +53,7 @@
                 <RelativeLayout
                     android:id="@+id/pdfRl"
                     android:layout_width="100dp"
-                    android:layout_height="140dp"
+                    android:layout_height="150dp"
                     android:layout_marginEnd="5dp"
                     android:background="@color/gray02">
                     <com.github.barteksc.pdfviewer.PDFView
@@ -63,7 +65,7 @@
                         android:id="@+id/progressBar"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true" />
                 </RelativeLayout>
                 <!--            Title-->
                 <TextView
@@ -169,6 +171,24 @@
                             android:layout_marginEnd="5dp"
                             android:text="N/A"/>
                     </TableRow>
+<!--                   DownloadRow -->
+                    <TableRow
+                        android:layout_marginTop="5dp">
+                        <TextView
+                            android:id="@+id/pageLabelTv"
+                            style="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:text="Pages: "/>
+                        <TextView
+                            android:id="@+id/pageTv"
+                            style="@style/TextAppearance.MaterialComponents.Caption"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="5dp"
+                            android:text="N/A"/>
+                    </TableRow>
 
                 </TableLayout>
 
@@ -182,8 +202,49 @@
                 android:layout_marginTop="5dp"
                 android:text="Description"
                 android:textColor="@color/black"/>
-            
+
         </LinearLayout>
     </ScrollView>
+<!--    Nut down load-->
+    <LinearLayout
+        android:id="@+id/bookOptionsLl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        >
+        <!--    Button mo sach-->
+        <Button
+            android:id="@+id/readBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:background="@color/design_default_color_on_primary"
+            android:text="READ"
+            android:drawableTop="@drawable/ic_book_white"/>
+        <!--    Button tai sach-->
+        <Button
+            android:id="@+id/downBtn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:background="@color/design_default_color_on_primary"
+            android:text="DOWN"
+            android:drawableTop="@drawable/ic_download_white"/>
+        <Button
+            android:id="@+id/favoriteBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_alignParentBottom="true"
+            android:background="@color/design_default_color_on_primary"
+            android:text="Add Favotite"
+            android:drawableTop="@drawable/ic_favorite_white"/>
+
+    </LinearLayout>
+
+
 
 </RelativeLayout>

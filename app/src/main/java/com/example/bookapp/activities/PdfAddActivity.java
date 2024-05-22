@@ -1,4 +1,4 @@
-package com.example.bookapp;
+package com.example.bookapp.activities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.bookapp.databinding.ActivityPdfAddBinding;
-import com.example.bookapp.model.ModelCategory;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -113,7 +112,7 @@ public class PdfAddActivity extends AppCompatActivity {
         } else if (TextUtils.isEmpty(description)) {
             Toast.makeText(this, "Enter Description", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(selectedCategoryId)) {
-            Toast.makeText(this, "Pick Dategory", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Pick Category", Toast.LENGTH_SHORT).show();
         } else if (pdfUri == null) {
             Toast.makeText(this, "Pick Pdf", Toast.LENGTH_SHORT).show();
         }
@@ -168,6 +167,7 @@ public class PdfAddActivity extends AppCompatActivity {
         HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("uid",uid);
         hashMap.put("id",""+timestamp);
+        hashMap.put("category",""+selectedCategoryTitle);
         hashMap.put("title",title);
         hashMap.put("description",description);
         hashMap.put("categoryId",""+selectedCategoryId);
