@@ -23,9 +23,11 @@ import android.widget.Toast;
 import com.example.bookapp.Constants;
 import com.example.bookapp.MyApplication;
 import com.example.bookapp.R;
+import com.example.bookapp.adapter.AdapterComment;
 import com.example.bookapp.adapter.AdapterPdfFavorite;
 import com.example.bookapp.databinding.ActivityPdfDetailBinding;
 import com.example.bookapp.databinding.DialogCommentAddBinding;
+import com.example.bookapp.model.ModelComment;
 import com.example.bookapp.model.ModelPdf;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
@@ -55,6 +57,9 @@ public class PdfDetailActivity extends AppCompatActivity {
 
     private ProgressDialog progressDialog;
 
+    private ArrayList<ModelComment> commentArrayList;
+    private AdapterComment adapterComment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +84,8 @@ public class PdfDetailActivity extends AppCompatActivity {
         }
 
         loadBookDetail();
+
+        loadComments();
 
         //tang luot xem
         MyApplication.incrementBookCount(bookId);
@@ -134,6 +141,37 @@ public class PdfDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+    }
+
+    private void loadComments() {
+
+        commentArrayList = new ArrayList<>();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Books");
+        ref.child(bookId).child("Comments")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        commentArrayList.clear();
+                        for(DataSnapshot ds : snapshot.getChildren()){
+
+                            ModelComment model = ds.getValue(ModelComment.class);
+
+                            commentArrayList.add(model);
+                        }
+
+                        //setup adapter
+                        adapterComment = new AdapterComment(PdfDetailActivity.this, commentArrayList);
+                        binding.commentsRv.setAdapter(adapterComment);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
 
     }
