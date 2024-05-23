@@ -3,15 +3,19 @@ package com.example.bookapp.activities;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,6 +25,7 @@ import com.example.bookapp.MyApplication;
 import com.example.bookapp.R;
 import com.example.bookapp.adapter.AdapterPdfFavorite;
 import com.example.bookapp.databinding.ActivityPdfDetailBinding;
+import com.example.bookapp.databinding.DialogCommentAddBinding;
 import com.example.bookapp.model.ModelPdf;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
@@ -36,6 +41,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class PdfDetailActivity extends AppCompatActivity {
 
@@ -47,7 +53,7 @@ public class PdfDetailActivity extends AppCompatActivity {
 
     private FirebaseAuth firebaseAuth;
 
-
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,10 @@ public class PdfDetailActivity extends AppCompatActivity {
         bookTitle = intent.getStringExtra("bookTitle");
 
         firebaseAuth = FirebaseAuth.getInstance();
+
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Please wait");
+        progressDialog.setCanceledOnTouchOutside(false);
 
         if(firebaseAuth.getCurrentUser() != null){
             checkIsFavorite();
@@ -110,6 +120,99 @@ public class PdfDetailActivity extends AppCompatActivity {
                 }
             }
         });
+
+
+//        show, add comment
+        binding.addCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(firebaseAuth.getCurrentUser() == null){
+                    Toast.makeText(PdfDetailActivity.this, "You are not logged in...", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    addCommentDialog();
+                }
+            }
+        });
+
+
+    }
+
+    String comment = "";
+
+    private void addCommentDialog() {
+        // thoi view vao dialog
+        DialogCommentAddBinding commentAddBinding = DialogCommentAddBinding.inflate(LayoutInflater.from(this));
+
+        // setup alert dialog builder
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CustomDialog);
+        builder.setView(commentAddBinding.getRoot());
+
+        //tao va show dialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+        //click back thi thoat ra khio dialog add cmt
+        commentAddBinding.backBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
+        //click them commment
+        commentAddBinding.submitBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                comment = commentAddBinding.commentEt.getText().toString().trim();
+
+                if(TextUtils.isEmpty(comment)){
+                    Toast.makeText(PdfDetailActivity.this, "Enter your comment", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    alertDialog.dismiss();
+                    addComment();
+                }
+            }
+        });
+
+
+    }
+
+    private void addComment() {
+
+        progressDialog.setMessage("Adding comment..");
+        progressDialog.show();
+
+        String timestamp = ""+System.currentTimeMillis();
+
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("id",""+timestamp);
+        hashMap.put("bookId",""+bookId);
+        hashMap.put("timestamp",""+bookId);
+        hashMap.put("comment",""+comment);
+        hashMap.put("uid",""+firebaseAuth.getUid());
+
+        //Books bookID Comments commentID commentData
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Books");
+        reference.child(bookId).child("Comments").child(timestamp)
+                .setValue(hashMap)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Toast.makeText(PdfDetailActivity.this, "Comment added", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        progressDialog.dismiss();
+                        Toast.makeText(PdfDetailActivity.this, "Failed to add comment: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
     }
 

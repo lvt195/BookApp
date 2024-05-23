@@ -96,7 +96,7 @@ public class AdapterPdfFavorite extends RecyclerView.Adapter<AdapterPdfFavorite.
                         String viewCount = ""+snapshot.child("viewCount").getValue();
                         String downloadCount = ""+snapshot.child("downloadCount").getValue();
 
-                        Log.d(TAG, ": "+ bookUrl);
+                        Log.d(TAG, "url: "+ bookUrl);
 
                         model.setFavorite(true);
                         model.setTitle(bookTitle);
