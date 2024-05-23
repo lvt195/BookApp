@@ -5,10 +5,11 @@ public class ModelPdf {
     String uid, id, title, description, categoryId, url;
     long timestamp, viewCount, downloadCount;
 
+    boolean favorite;
     public ModelPdf() {
     }
 
-    public ModelPdf(String uid, String id, String title, String description, String categoryId, String url, long timestamp, long viewCount, long downloadCount) {
+    public ModelPdf(String uid, String id, String title, String description, String categoryId, String url, long timestamp, long viewCount, long downloadCount, boolean favorite) {
         this.uid = uid;
         this.id = id;
         this.title = title;
@@ -18,6 +19,15 @@ public class ModelPdf {
         this.timestamp = timestamp;
         this.viewCount = viewCount;
         this.downloadCount = downloadCount;
+        this.favorite = favorite;
+    }
+
+    public boolean isFavorite() {
+        return favorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        this.favorite = favorite;
     }
 
     public String getUid() {

@@ -142,6 +142,7 @@ public class MyApplication extends Application {
 
         String TAG = "LOAD_BANNER_PDF";
 
+        Log.d(TAG, "loadBannerPdf: url la: "+ pdfUrl);
 
         StorageReference ref = FirebaseStorage.getInstance().getReferenceFromUrl(pdfUrl);
         ref.getBytes(MAX_BYTES_PDF)

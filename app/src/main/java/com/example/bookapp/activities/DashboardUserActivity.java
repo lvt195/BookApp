@@ -56,6 +56,16 @@ public class DashboardUserActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+
+        binding.personBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashboardUserActivity.this, ProfileActivity.class));
+            }
+        });
+
+
     }
 
     private void setupViewPagerAdapter(ViewPager viewPager){

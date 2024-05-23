@@ -76,7 +76,7 @@
                     android:layout_toEndOf="@id/pdfRl"
                     android:text="Title of Book"/>
 
-<!--                Table-->
+<!--                Table hien thi thong tin-->
                 <TableLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -203,7 +203,21 @@
                 android:text="Description"
                 android:textColor="@color/black"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/gray02"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+<!--              buton-->
+
+            </RelativeLayout>
         </LinearLayout>
+
     </ScrollView>
 <!--    Nut down load-->
     <LinearLayout

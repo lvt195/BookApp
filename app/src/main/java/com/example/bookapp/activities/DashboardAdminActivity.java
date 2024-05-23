@@ -89,6 +89,13 @@ public class DashboardAdminActivity extends AppCompatActivity {
             }
         });
 
+        binding.personBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(DashboardAdminActivity.this, ProfileActivity.class));
+            }
+        });
+
     }
 
     private void loadCategories() {

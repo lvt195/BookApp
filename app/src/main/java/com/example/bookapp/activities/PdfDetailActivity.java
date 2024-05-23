@@ -19,7 +19,9 @@ import android.widget.Toast;
 import com.example.bookapp.Constants;
 import com.example.bookapp.MyApplication;
 import com.example.bookapp.R;
+import com.example.bookapp.adapter.AdapterPdfFavorite;
 import com.example.bookapp.databinding.ActivityPdfDetailBinding;
+import com.example.bookapp.model.ModelPdf;
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -32,6 +34,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
 
 public class PdfDetailActivity extends AppCompatActivity {
 

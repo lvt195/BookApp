@@ -161,7 +161,7 @@ public class BookUserFragment extends Fragment {
         pdfArrayList = new ArrayList<>();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Books");
-        ref.child("categoryId").equalTo(categoryId)// load 10 sach co luot xem nhieu nhat
+        ref.orderByChild("categoryId").equalTo(categoryId)//
                 .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
