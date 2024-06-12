@@ -37,7 +37,7 @@
             android:id="@+id/titleTv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toStartOf="@+id/morebtn"
+            android:layout_toStartOf="@+id/moreBtn"
             android:text="Book Title"
             style="@style/TextAppearance.MaterialComponents.Headline6"
             android:layout_toEndOf="@+id/pdfRl"
