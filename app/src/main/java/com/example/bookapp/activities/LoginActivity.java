@@ -38,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance();
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setTitle("Hay cho doi");
+        progressDialog.setTitle("Please wait");
         progressDialog.setCanceledOnTouchOutside(false);
 
         binding.noAccounTv.setOnClickListener(new View.OnClickListener() {
@@ -69,9 +69,9 @@ public class LoginActivity extends AppCompatActivity {
         password=binding.passwordEt.getText().toString().trim();
 
         if(!Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            Toast.makeText(this, "Sai dinh dang email", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Wrong email format", Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(password)) {
-            Toast.makeText(this,"Nhap mat khau",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Enter password",Toast.LENGTH_SHORT).show();
         }
         else {
             loginUser();
@@ -79,7 +79,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser() {
-        progressDialog.setMessage("Dang dang nhap");
+        progressDialog.setMessage("Log in");
         progressDialog.show();
 
         firebaseAuth.signInWithEmailAndPassword(email,password)
@@ -93,13 +93,13 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         progressDialog.dismiss();
-                        Toast.makeText(LoginActivity.this, ""+e.getMessage(),Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Username or password is incorrect",Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
     private void checkUser() {
-        progressDialog.setMessage("Dang kiem tra thong tin");
+        progressDialog.setMessage("Checking information");
         FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
 
         //ktra trong db
