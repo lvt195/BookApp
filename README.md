@@ -1,16 +1,31 @@
 # BookApp
 
-This app is designed to help admin, user manage and discover books, utilizing Firebase as the backend. Below is a list of key files and their functionalities:
+This app is designed to help admin, user manage and discover books, utilizing Firebase as the backend. 
+Technologies and libraries used: 
+- Android: TextView, TabLayout, Floating Widget, ProgressDialog, RecyclerView, Fragment, ViewPager, Adapter,...
+- Data Binding
+- PDF View: https://github.com/DImuthuUpe/AndroidPdfViewer
+- Firebase: Realtime Database, Storage, Authentication
+- Glide: https://github.com/bumptech/glide
+Below is a list of key files and their functionalities:
 
 ## Activity Files
 
-- `AddBookActivity.java`: Manages the process of adding new books to the user's collection.
-- `BookDetailActivity.java`: Displays detailed information about a specific book.
-- `LoginActivity.java`: Handles user authentication.
-- `MainActivity.java`: The app's entry point and primary navigation hub.
-- `RegisterActivity.java`: Manages user registration.
+- `CategoryAddActivity.java`: Manages the addition of new categories for admin and including data validation.
+- `DashboardAdminActivity.java`: Displays a list of categories, search category and floating buttons add book for administrators.
+- `DashboardUserActivity.java`: Handles user authentication.
+- `ForgetPasswordActivity.java`: The app's entry point and primary navigation hub.
+- `LoginActivity.java`: Manages user registration.
+- `MainActivity.java`: Displays a splash screen while the app initializes.
+- `PdfAddActivity.java`: Handles the process of updating book details.
+- `PdfDetailActivity.java`: Displays a splash screen while the app initializes.
+- `PdfEditActivity.java`: Handles the process of updating book details.
+- `PdfListAdminActivity.java`: Displays a splash screen while the app initializes.
+- `PdfViewActivity.java`: Handles the process of updating book details.
+- `ProfileActivity.java`: Displays a splash screen while the app initializes.
+- `ProfileEditActivity.java`: Handles the process of updating book details.
+- `RegisterActivity.java`: Displays a splash screen while the app initializes.
 - `SplashActivity.java`: Displays a splash screen while the app initializes.
-- `UpdateBookActivity.java`: Handles the process of updating book details.
 
 ## Fragment Files
 
