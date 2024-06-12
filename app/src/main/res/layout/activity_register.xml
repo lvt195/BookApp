@@ -156,6 +156,7 @@
                 android:layout_marginTop="15dp"
                 android:layout_below="@+id/cpasswordTil"
                 android:text="Register"
+                android:textColor="@color/white"
                 android:background="@drawable/shape_button01"/>
 
         </RelativeLayout>

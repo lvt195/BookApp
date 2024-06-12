@@ -15,7 +15,8 @@
         android:label="@string/app_name"
         android:largeHeap="true"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar"
+        android:enableOnBackInvokedCallback="true"
+        android:theme="@style/Theme.BookApp"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
