@@ -12,31 +12,34 @@ Below is a list of key files and their functionalities:
 ## Activity Files
 
 - `CategoryAddActivity.java`: Manages the addition of new categories for admin and including data validation.
-- `DashboardAdminActivity.java`: Displays a list of categories, search category and floating buttons add book for administrators.
-- `DashboardUserActivity.java`: Handles user authentication.
-- `ForgetPasswordActivity.java`: The app's entry point and primary navigation hub.
-- `LoginActivity.java`: Manages user registration.
-- `MainActivity.java`: Displays a splash screen while the app initializes.
-- `PdfAddActivity.java`: Handles the process of updating book details.
-- `PdfDetailActivity.java`: Displays a splash screen while the app initializes.
-- `PdfEditActivity.java`: Handles the process of updating book details.
-- `PdfListAdminActivity.java`: Displays a splash screen while the app initializes.
-- `PdfViewActivity.java`: Handles the process of updating book details.
-- `ProfileActivity.java`: Displays a splash screen while the app initializes.
-- `ProfileEditActivity.java`: Handles the process of updating book details.
-- `RegisterActivity.java`: Displays a splash screen while the app initializes.
+- `DashboardAdminActivity.java`: Displays a list of categories, search category and floating buttons add book for admin.
+- `DashboardUserActivity.java`: 
+Display a list of all books, filter books by most viewed, most downloaded and books by categories
+- `ForgetPasswordActivity.java`: Displaying the forgot password screen will enter the recovery email, send an email to that email and including data validation.
+- `LoginActivity.java`: Log in by email and password. After authentication, it checks user permissions and redirects to: DashboardUserActivity for users and DashboardAdminActivity for admin.
+- `MainActivity.java`: 
+MainActivity is the application's start screen. Users can choose to log in or skip to access the user interface..
+- `PdfAddActivity.java`: 
+Admin adds a book: select the PDF file from the device, select category, after adding the pdf file will be stored on Firebase Storage
+- `PdfDetailActivity.java`: Displays detailed information of a Book and allows users to read book, view comments, add/remove book from favorites, and download books.
+- `PdfEditActivity.java`:Allows Admin to edit information of a Book, can select a category from the available list and update the information of the Book after editing.
+- `PdfListAdminActivity.java`: Displays a list of Books belonging to a specific category. Admin can view this list and search for Books by title. The data is pulled from the Firebase Realtime Database and displayed in a RecyclerView. Users can also return to the previous screen by pressing the "back" button.
+- `PdfViewActivity.java`: Allows users to view books as pdf files loaded from a url pointing to books located in Firebase Storage.
+- `ProfileActivity.java`: Displays the user's personal information: name, email, profile picture, join date, account type, and email verification statu; check and send verification emails, and view a list of their favorite books.
+- `ProfileEditActivity.java`: Allows users to edit their personal information and profile picture. User can enter new name and select image from gallery or camera. After updating the information, the new data will be saved to the database and displayed on the user interface.
+- `RegisterActivity.java`: 
+Displays information for account registration such as name, email and password. A new account will be created on Firebase Authentication. If successful, the user's information will be saved to the Firebase Realtime Database and they will be redirected to the app's home screen.
 - `SplashActivity.java`: Displays a splash screen while the app initializes.
 
 ## Fragment Files
 
-- `BookListFragment.java`: Displays a list of books in the user's collection.
-- `ProfileFragment.java`: Handles user profile display and editing.
-- `SearchFragment.java`: Allows users to search for books.
+- `BookUserFragment.java`: 
+Fragment BookUserFragment displays a list of books based on different criteria such as "All", "Most viewed", or "Most downloaded". It also allows users to search for books and filter the results.
 
 ## Adapter Files
 
-- `BookAdapter.java`: Manages the display of books in a RecyclerView.
-- `CategoryAdapter.java`: Manages the display of book categories.
+- `AdapterCategory.java`: Manages the display of books categories in RowCategory.
+- `AdapterCategory.java`: Manages the display of book categories.
 
 ## Model Files
 
@@ -44,10 +47,6 @@ Below is a list of key files and their functionalities:
 - `Category.java`: Defines the data structure for a book category.
 - `User.java`: Defines the data structure for a user.
 
-## Utility Files
-
-- `FirebaseUtils.java`: Provides utility functions for interacting with Firebase services.
-- `ImageUtils.java`: Handles image processing and uploading.
 
 Feel free to explore these files to understand the structure of the app and how different components interact. The app leverages Firebase Authentication, Realtime Database, and Firebase Storage to provide a seamless book management experience.
 
