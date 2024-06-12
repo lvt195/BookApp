@@ -1,6 +1,6 @@
 # BookApp
 
-Welcome to the BookApp repository! This app is designed to help users manage and discover books, utilizing Firebase as the backend. Below is a list of key files and their functionalities:
+This app is designed to help admin, user manage and discover books, utilizing Firebase as the backend. Below is a list of key files and their functionalities:
 
 ## Activity Files
 
