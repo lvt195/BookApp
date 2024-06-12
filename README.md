@@ -38,14 +38,52 @@ Fragment BookUserFragment displays a list of books based on different criteria s
 
 ## Adapter Files
 
-- `AdapterCategory.java`: Manages the display of books categories in RowCategory.
-- `AdapterCategory.java`: Manages the display of book categories.
+- `AdapterCategory.java`: Manages the display of books categories in DashboardAdminActivity.
+- `AdapterComment.java`: Manages the display of comments in PdfDetailActivity .
+- `AdapterPdfUser.java`: 
+Manage book display in BookUserFragment between tablayouts on DashboardUserActivity .
+- `AdapterPdfAdmin.java`: Manages the display of books (CURD) in PdfListAdminActivity .
+- `AdapterPdfFavorite.java`: Manages the display of favorite books in ProfileActivity .
 
 ## Model Files
 
-- `Book.java`: Defines the data structure for a book.
-- `Category.java`: Defines the data structure for a book category.
-- `User.java`: Defines the data structure for a user.
+- `ModelPdf.java`: Defines the data structure for a book.
+- `ModelCategory.java`: Defines the data structure for a book category.
+- `ModelComment.java`: Defines the data structure for a comment.
+
+## Other
+- Folder `filter`: displays a list of PDF books or categories searched by the user's keywords, helping users easily find what they want in a large list.
+- `Constants.java`: Set size limit of pdf file (currently set MAX_BYTES_PDF = 500000000)
+- `Myapplication.java`: Some functions that work with Firebase are widely used:
+  - deleteBook: Delete book in storage and database realtime 
+  - loadPdfSize: Load size of the book
+  - loadBannerPdf: Load first page to display as banner of book
+  - loadCategory: Load category by categoryId
+  - incrementBookCount: Increase views when users click on book details 
+  - downloadBook: Load file PDF of book from Firebase Storage. If successful, call the `saveDownloadBook`, 
+  - saveDownloadBook: Save downloaded book content to the "Downloads" folder on your device and increase the number of downloads of the book in Firebase Realtime Database.
+  - incrementBookDownloadCount: Increase the number of downloads of the book
+  - addToFavorite: Add books to your favorites list
+  - removeFromFavorite: Remove books to your favorites list
+
+## Demo images
+
+<div style="display: flex; flex-wrap: wrap;">
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/MainActivity.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/Login.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/RegisterValidate.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/DashboardAdmin.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/DashboardUser.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/PdfListAdmin.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/PdfAdd.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/PdfDetail.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/PdfView.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/Profile.PNG" alt="Image 1" width="250"/>
+  <img src="https://github.com/lvt195/BookApp/blob/master/bookPdf/Demo/EditProfile.PNG" alt="Image 1" width="250"/>
+  
+</div>
+
+
 
 
 Feel free to explore these files to understand the structure of the app and how different components interact. The app leverages Firebase Authentication, Realtime Database, and Firebase Storage to provide a seamless book management experience.
@@ -58,4 +96,6 @@ To use this app:
 2. Set up your Firebase project and update the `google-services.json` file.
 3. Build and run the app on your Android device or emulator.
 
-For any questions or issues, please feel free to open an issue in the repository. Enjoy managing your book collection with BookApp!
+For any questions or issues, please feel free to open an issue in the repository. 
+
+### Thanks!
