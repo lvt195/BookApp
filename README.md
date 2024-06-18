@@ -7,6 +7,7 @@ Technologies and libraries used:
 - PDF View: https://github.com/DImuthuUpe/AndroidPdfViewer
 - Firebase: Realtime Database, Storage, Authentication
 - Glide: https://github.com/bumptech/glide
+  
 Below is a list of key files and their functionalities:
 
 ## Activity Files
