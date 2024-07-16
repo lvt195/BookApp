@@ -3,7 +3,7 @@
 This app is designed to help admin, user manage and discover books, utilizing Firebase as the backend. 
 Technologies and libraries used: 
 - Android: TextView, TabLayout, Floating Widget, ProgressDialog, RecyclerView, Fragment, ViewPager, Adapter,...
-- Data Binding
+- ViewBinding
 - PDF View: https://github.com/DImuthuUpe/AndroidPdfViewer
 - Firebase: Realtime Database, Storage, Authentication
 - Glide: https://github.com/bumptech/glide
