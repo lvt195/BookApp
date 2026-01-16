@@ -5,12 +5,12 @@ plugins {
 
 android {
     namespace 'com.example.bookapp'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
-        applicationId "com.example.bookapp"
+        applicationId "plutobookapp"
         minSdk 24
-        targetSdk 33
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
@@ -24,8 +24,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
 
     buildFeatures{
@@ -35,22 +35,23 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core:1.13.1'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
 
-    implementation 'com.google.firebase:firebase-auth:23.0.0'
-    implementation 'com.google.firebase:firebase-database:21.0.0'
-    implementation 'com.google.firebase:firebase-firestore:25.0.0'
-    implementation 'com.google.firebase:firebase-storage:21.0.0'
+    implementation platform('com.google.firebase:firebase-bom:33.7.0')
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-database'
+    implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-storage'
 
     implementation 'com.github.barteksc:android-pdf-viewer:2.8.2'
 
     implementation 'com.github.bumptech.glide:glide:4.16.0'
-    implementation 'androidx.navigation:navigation-fragment:2.8.3'
-    implementation 'androidx.navigation:navigation-ui:2.8.3'
-    implementation 'androidx.activity:activity:1.9.1'
+    implementation 'androidx.navigation:navigation-fragment:2.8.5'
+    implementation 'androidx.navigation:navigation-ui:2.8.5'
+    implementation 'androidx.activity:activity:1.9.3'
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
