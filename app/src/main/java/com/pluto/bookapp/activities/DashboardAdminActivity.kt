@@ -1,139 +1,96 @@
-package com.pluto.bookapp.activities;
+package com.pluto.bookapp.activities
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.google.firebase.auth.FirebaseAuth
+import com.pluto.bookapp.ui.screens.admin.CategoryAddScreen
+import com.pluto.bookapp.ui.screens.admin.DashboardAdminScreen
+import com.pluto.bookapp.ui.screens.admin.PdfAddScreen
+import com.pluto.bookapp.ui.screens.admin.PdfListAdminScreen
+import com.pluto.bookapp.viewmodel.AdminViewModel
+import com.pluto.bookapp.viewmodel.DashboardViewModel
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
+@AndroidEntryPoint
+class DashboardAdminActivity : ComponentActivity() {
 
-import com.pluto.bookapp.adapter.AdapterCategory;
-import com.pluto.bookapp.databinding.ActivityDashboardAdminBinding;
-import com.pluto.bookapp.model.ModelCategory;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+    private val adminViewModel: AdminViewModel by viewModels()
+    private val dashboardViewModel: DashboardViewModel by viewModels() // Re-using data fetching logic
+    private val authViewModel: com.pluto.bookapp.viewmodel.AuthViewModel by viewModels()
 
-import java.util.ArrayList;
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
-public class DashboardAdminActivity extends AppCompatActivity {
-
-    private ActivityDashboardAdminBinding binding;
-
-    private FirebaseAuth firebaseAuth;
-
-    private ArrayList<ModelCategory> categoryArrayList;
-
-    private AdapterCategory adapterCategory;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityDashboardAdminBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        firebaseAuth=FirebaseAuth.getInstance();
-        checkUser();
-        
-        loadCategories();
-
-        binding.searchEt.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                try {
-                    adapterCategory.getFilter().filter(s);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            val navController = rememberNavController()
+            val user = firebaseAuth.currentUser
+            val email = user?.email
+            
+            NavHost(navController = navController, startDestination = "dashboard") {
+                composable("dashboard") {
+                    DashboardAdminScreen(
+                        viewModel = adminViewModel,
+                        userEmail = email,
+                        onLogoutClick = {
+                            authViewModel.logout()
+                            startActivity(Intent(this@DashboardAdminActivity, MainActivity::class.java))
+                            finish()
+                        },
+                        onProfileClick = {
+                            startActivity(Intent(this@DashboardAdminActivity, ProfileActivity::class.java))
+                        },
+                        onAddCategoryClick = { navController.navigate("category_add") },
+                        onAddPdfClick = { navController.navigate("pdf_add") },
+                        onCategoryClick = { id, title -> 
+                            navController.navigate("pdf_list/$id/$title") 
+                        }
+                    )
                 }
-                catch (Exception e){
-
+                
+                composable("category_add") {
+                    CategoryAddScreen(
+                        viewModel = adminViewModel,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
+                
+                composable("pdf_add") {
+                    PdfAddScreen(
+                         viewModel = adminViewModel,
+                         onBackClick = { navController.popBackStack() }
+                    )
+                }
+                
+                composable(
+                    "pdf_list/{categoryId}/{categoryTitle}",
+                    arguments = listOf(
+                        navArgument("categoryId") { type = NavType.StringType },
+                        navArgument("categoryTitle") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    val categoryId = backStackEntry.arguments?.getString("categoryId") ?: ""
+                    val categoryTitle = backStackEntry.arguments?.getString("categoryTitle") ?: ""
+                    
+                    PdfListAdminScreen(
+                        adminViewModel = adminViewModel,
+                        dashboardViewModel = dashboardViewModel,
+                        categoryId = categoryId,
+                        categoryTitle = categoryTitle,
+                        onBackClick = { navController.popBackStack() }
+                    )
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-            }
-        });
-
-        binding.logoutBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                firebaseAuth.signOut();
-                checkUser();
-            }
-        });
-
-        //nut them danh muc
-        binding.addCategoryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(DashboardAdminActivity.this, CategoryAddActivity.class));
-            }
-        });
-
-        //nut troi them pdf
-        binding.addPdfFab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(DashboardAdminActivity.this, PdfAddActivity.class));
-            }
-        });
-
-        binding.personBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(DashboardAdminActivity.this, ProfileActivity.class));
-            }
-        });
-
-    }
-
-    private void loadCategories() {
-
-        categoryArrayList = new ArrayList<>();
-
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Categories");
-        ref.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                categoryArrayList.clear();
-                // lay du lieu them vao danh sach category
-                for (DataSnapshot ds: snapshot.getChildren()){
-                    ModelCategory model = ds.getValue(ModelCategory.class);
-                    categoryArrayList.add(model);
-                }
-
-                adapterCategory = new AdapterCategory(DashboardAdminActivity.this, categoryArrayList);
-                //gan adapter vao recycler
-                binding.categoriesRv.setAdapter(adapterCategory);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }
-
-    private void checkUser() {
-        FirebaseUser firebaseUser = firebaseAuth.getCurrentUser();
-        if(firebaseUser == null){
-            startActivity(new Intent(this, MainActivity.class));
-        }
-        else {
-            String email = firebaseUser.getEmail();
-            binding.subTitletv.setText(email);
         }
     }
 }

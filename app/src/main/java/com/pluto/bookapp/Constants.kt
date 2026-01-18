@@ -1,5 +1,5 @@
-package com.pluto.bookapp;
+package com.pluto.bookapp
 
-public class Constants {
-    public static final long MAX_BYTES_PDF = 500000000;//500MB
+object Constants {
+    const val MAX_BYTES_PDF: Long = 50000000 // 50MB
 }

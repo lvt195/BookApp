@@ -1,35 +1,95 @@
-package com.pluto.bookapp.activities;
+package com.pluto.bookapp.activities
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.viewModels
+import androidx.compose.runtime.Composable
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.pluto.bookapp.ui.screens.auth.LoginScreen
+import com.pluto.bookapp.ui.screens.auth.RegisterScreen
+import com.pluto.bookapp.ui.screens.auth.SplashScreen
+import com.pluto.bookapp.viewmodel.AuthViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.view.View;
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
 
-import com.pluto.bookapp.databinding.ActivityMainBinding;
+    private val authViewModel: AuthViewModel by viewModels()
 
-public class MainActivity extends AppCompatActivity {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            AuthNavigation(authViewModel = authViewModel)
+        }
+    }
 
-    ActivityMainBinding binding;
+    @Composable
+    fun AuthNavigation(authViewModel: AuthViewModel) {
+        val navController = rememberNavController()
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        binding = ActivityMainBinding.inflate(getLayoutInflater());
-        setContentView(binding.getRoot());
-
-        binding.loginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                finish();
+        NavHost(navController = navController, startDestination = "splash") {
+            composable("splash") {
+                SplashScreen(
+                    viewModel = authViewModel,
+                    onNavigateToMain = {
+                        navController.navigate("login") {
+                            popUpTo("splash") { inclusive = true }
+                        }
+                    },
+                    onNavigateToUserDashboard = {
+                        startActivity(Intent(this@MainActivity, DashboardUserActivity::class.java))
+                        finish()
+                    },
+                    onNavigateToAdminDashboard = {
+                        startActivity(Intent(this@MainActivity, DashboardAdminActivity::class.java))
+                        finish()
+                    }
+                )
             }
-        });
-        binding.skipBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, DashboardUserActivity.class));
+            composable("login") {
+                LoginScreen(
+                    viewModel = authViewModel,
+                    onNavigateToRegister = {
+                        authViewModel.resetState()
+                        navController.navigate("register")
+                    },
+                    onNavigateToForgotPassword = {
+                        navController.navigate("forgot_password")
+                    },
+                    onLoginSuccess = {
+                         navController.navigate("splash") {
+                             popUpTo("login") { inclusive = true }
+                         }
+                    }
+                )
             }
-        });
+            composable("register") {
+                RegisterScreen(
+                    viewModel = authViewModel,
+                    onNavigateToLogin = {
+                        authViewModel.resetState()
+                        navController.popBackStack()
+                    },
+                    onRegisterSuccess = {
+                         navController.navigate("splash") {
+                             popUpTo("register") { inclusive = true }
+                         }
+                    }
+                )
+            }
+            composable("forgot_password") {
+                com.pluto.bookapp.ui.screens.auth.ForgotPasswordScreen(
+                    viewModel = authViewModel,
+                    onBackClick = {
+                        authViewModel.resetState()
+                        navController.popBackStack() 
+                    }
+                )
+            }
+        }
     }
 }
