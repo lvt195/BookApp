@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -22,11 +23,20 @@ import com.pluto.bookapp.viewmodel.ProfileViewModel
 @Composable
 fun ProfileScreen(
     viewModel: ProfileViewModel,
+    isEmailVerified: Boolean,
+    onResendEmail: () -> Unit,
     onBackClick: () -> Unit,
     onEditProfileClick: () -> Unit
 ) {
     val userData by viewModel.userData.collectAsStateWithLifecycle()
     val favoriteCount by viewModel.favoriteCount.collectAsStateWithLifecycle()
+    // Assume AuthViewModel is also passed or injected, but here we can't easily access it without modifying signature.
+    // However, ProfileViewModel likely doesn't have it. Let's check ProfileViewModel.
+    // Better to pass verification status to ProfileScreen from navigation host, or inject AuthViewModel here.
+    // Given the signature: fun ProfileScreen(viewModel: ProfileViewModel...), we should probably stick to what we have or modify call site.
+    // But wait, the user instructions implied ProfileScreen update.
+    // Let's modify ProfileScreen to accept isEmailVerified and onResendEmail.
+
 
     var showEditDialog by remember { mutableStateOf(false) }
     var newName by remember { mutableStateOf("") }
@@ -137,7 +147,23 @@ fun ProfileScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text("Account Status", style = MaterialTheme.typography.titleMedium)
-                        Text("Active", color = MaterialTheme.colorScheme.primary)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (isEmailVerified) {
+                                Text("Verified", color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold)
+                                Icon(Icons.Default.Check, contentDescription = "Verified", tint = MaterialTheme.colorScheme.primary)
+                            } else {
+                                Text("Unverified", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Button(
+                                    onClick = onResendEmail, 
+                                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                                    modifier = Modifier.height(32.dp)
+                                ) {
+                                    Text("Verify Now", style = MaterialTheme.typography.labelSmall)
+                                }
+                            }
+                        }
                     }
                     HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
                     Row(

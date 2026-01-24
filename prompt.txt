@@ -1,0 +1,39 @@
+
+# AI Image Generation Prompts for Pluto BookApp
+
+Use these prompts in tools like Midjourney, DALL-E 3, or Stable Diffusion to generate professional assets for your store listing.
+
+---
+
+## 1. App Icon Prompt (Logo)
+**Concept:** combines the "Book" element with the "Pluto/Space" theme in a modern, minimal way.
+
+**Prompt:**
+> A professional mobile app icon for a digital library app named "Pluto Reader". The central element is a stylized, glowing open book that resembles a planet with a subtle planetary ring orbiting it. The design style is "3D neumorphism" or "modern vector" with smooth gradients.
+>
+> **Colors:** A rich palette of Deep Indigo (#3F51B5), Vibrant Teal (#009688), and Soft White.
+> **Background:** A solid, deep midnight blue circle (or rounded square).
+> **Details:** High contrast, clean lines, minimalist, no text inside the icon. Designed for Google Play Store. High resolution, 4k.
+
+---
+
+## 2. Feature Graphic Prompt (Play Store Banner)
+**Focus:** Reading experience, Community, and "Pluto" branding.
+**Dimensions:** 1024x500 aspect ratio.
+
+**Prompt:**
+> A stunning, cinematic feature graphic for the Google Play Store for an app named "Pluto Reader".
+>
+> **Composition:** On the right side, show two sleek modern smartphones floating in zero-gravity. The first phone screen displays a clean, elegant PDF reading interface. The second phone screen (slightly behind) shows a vibrant user profile and comment section.
+>
+> **Background:** An abstract, artistic cosmic background with deep purple and blue nebula clouds. Floating around the phones are subtle 3D glowing book icons and connection lines representing the "community" aspect.
+>
+> **Text:** On the left side, large bold futuristic typography reading "Pluto Reader" with a smaller subtitle below: "Read. Connect. Explore."
+>
+> **Style:** High-tech, premium UI/UX presentation, photorealistic 3D render, octa-render, vivid colors, 8k resolution.
+
+---
+
+## Tips for Best Results
+*   **Midjourney:** Add params like `--ar 1:1` for icon and `--ar 2:1` for banner. Use `--v 6.0` for best realism.
+*   **DALL-E:** If it generates text poorly, ask it to "generate the image without text" and add the text yourself in Canva/Photoshop later (this is often cleaner).

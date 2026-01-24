@@ -22,6 +22,22 @@ class AuthRepository @Inject constructor(
 
     fun isUserLoggedIn(): Boolean = firebaseAuth.currentUser != null
 
+    fun isEmailVerified(): Boolean {
+        val user = firebaseAuth.currentUser
+        user?.reload() // Ensure fresh data
+        return user?.isEmailVerified == true
+    }
+    
+    suspend fun resendVerificationEmail(): Result<Unit> {
+        return try {
+            val user = firebaseAuth.currentUser ?: throw Exception("User not logged in")
+            user.sendEmailVerification().await()
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
     suspend fun login(email: String, password: String): Result<Unit> {
         return try {
             firebaseAuth.signInWithEmailAndPassword(email, password).await()
@@ -46,6 +62,9 @@ class AuthRepository @Inject constructor(
 
             val ref = firebaseDatabase.getReference("Users")
             ref.child(uid).setValue(hashMap).await()
+
+            // Send verification email
+            authResult.user?.sendEmailVerification()?.await()
             
             Result.success(Unit)
         } catch (e: Exception) {

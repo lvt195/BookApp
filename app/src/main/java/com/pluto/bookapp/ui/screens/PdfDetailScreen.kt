@@ -39,13 +39,50 @@ fun PdfDetailScreen(
     bookViews: String,
     onBackClick: () -> Unit,
     onReadClick: (String) -> Unit, // bookId or Url
-    onDownloadClick: (String, String) -> Unit // url, title
+    onDownloadClick: (String, String) -> Unit, // url, title
+    isEmailVerified: Boolean,
+    onResendEmail: () -> Unit
 ) {
     val isFavorite by viewModel.isFavorite.collectAsStateWithLifecycle()
     val comments by viewModel.comments.collectAsStateWithLifecycle()
     
     var commentText by remember { mutableStateOf("") }
     
+    val viewState by viewModel.viewState.collectAsStateWithLifecycle()
+    
+    // Navigation effect when Ready
+    LaunchedEffect(viewState) {
+        if (viewState is PdfDetailViewModel.ViewState.Ready) {
+             val file = (viewState as PdfDetailViewModel.ViewState.Ready).file
+             val encodedPath = java.net.URLEncoder.encode(file.absolutePath, java.nio.charset.StandardCharsets.UTF_8.toString())
+             onReadClick(encodedPath)
+             viewModel.resetViewState()
+        }
+    }
+    
+    var showVerificationDialog by remember { mutableStateOf(false) }
+
+    if (showVerificationDialog) {
+        AlertDialog(
+            onDismissRequest = { showVerificationDialog = false },
+            title = { Text("Email Verification Required") },
+            text = { Text("You need to verify your email to access this feature. Please check your inbox.") },
+            confirmButton = {
+                Button(onClick = { 
+                    onResendEmail()
+                    showVerificationDialog = false 
+                }) {
+                    Text("Resend Email")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showVerificationDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
     LaunchedEffect(bookId) {
         viewModel.loadBookData(bookId)
     }
@@ -147,11 +184,17 @@ fun PdfDetailScreen(
                             }
 
                             Spacer(modifier = Modifier.height(8.dp))
-                            Button(onClick = { onReadClick(bookUrl) }, modifier = Modifier.fillMaxWidth()) {
+                            Button(onClick = { viewModel.openBook(bookId, bookUrl) }, modifier = Modifier.fillMaxWidth()) {
                                 Text("Read Book")
                             }
                             Spacer(modifier = Modifier.height(8.dp))
-                            OutlinedButton(onClick = { onDownloadClick(bookUrl, bookTitle) }, modifier = Modifier.fillMaxWidth()) {
+                            OutlinedButton(onClick = { 
+                                if (isEmailVerified) {
+                                    onDownloadClick(bookUrl, bookTitle)
+                                } else {
+                                    showVerificationDialog = true
+                                }
+                            }, modifier = Modifier.fillMaxWidth()) {
                                 Text("Download Book")
                             }
                         }
@@ -182,9 +225,13 @@ fun PdfDetailScreen(
                 )
                 IconButton(
                     onClick = { 
-                        if (commentText.isNotBlank()) {
-                            viewModel.addComment(bookId, commentText) 
-                            commentText = ""
+                        if (isEmailVerified) {
+                            if (commentText.isNotBlank()) {
+                                viewModel.addComment(bookId, commentText) 
+                                commentText = ""
+                            }
+                        } else {
+                            showVerificationDialog = true
                         }
                     },
                     enabled = commentText.isNotBlank()
@@ -193,6 +240,26 @@ fun PdfDetailScreen(
                 }
             }
         }
+    }
+    // Loading Dialog
+    if (viewState is PdfDetailViewModel.ViewState.Loading || viewState is PdfDetailViewModel.ViewState.Downloading) {
+        AlertDialog(
+            onDismissRequest = { /* Prevent dismiss */ },
+            title = { Text("Downloading Book") },
+            text = {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    val progress = if (viewState is PdfDetailViewModel.ViewState.Downloading) {
+                        (viewState as PdfDetailViewModel.ViewState.Downloading).progress
+                    } else {
+                        0
+                    }
+                    Text("Please wait... $progress%")
+                }
+            },
+            confirmButton = {}
+        )
     }
 }
 

@@ -20,41 +20,15 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun PdfViewScreen(bookUrl: String) {
-    var downloadedFile by remember { mutableStateOf<java.io.File?>(null) }
-    var downloadProgress by remember { androidx.compose.runtime.mutableFloatStateOf(0f) }
-    var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf<String?>(null) }
+    // bookUrl here will now be the local file path passed from DetailScreen
+    // But argument name is "bookUrl" in NavHost. We can keep the name or ignore it, 
+    // but logic must treat it as file path.
+    // However, if we want to be safe, we should check if it's a web URL or file path.
+    // Our ViewModel logic ensures we download first, so it should be a file path.
+    
     val context = androidx.compose.ui.platform.LocalContext.current
-
-    LaunchedEffect(bookUrl) {
-        isLoading = true
-        errorMessage = null
-        try {
-            val ref = com.google.firebase.storage.FirebaseStorage.getInstance().getReferenceFromUrl(bookUrl)
-            
-            // Create a temp file in cache directory
-            val fileName = "book_${System.currentTimeMillis()}.pdf"
-            val localFile = java.io.File(context.cacheDir, fileName)
-            
-            val task = ref.getFile(localFile)
-            task.addOnProgressListener { snapshot ->
-                val progress = if (snapshot.totalByteCount > 0) {
-                    (100f * snapshot.bytesTransferred) / snapshot.totalByteCount
-                } else {
-                    0f
-                }
-                downloadProgress = progress
-            }
-            
-            task.await()
-            downloadedFile = localFile
-        } catch (e: Exception) {
-            errorMessage = e.message ?: "Failed to load PDF"
-        } finally {
-            isLoading = false
-        }
-    }
-
+    val file = java.io.File(bookUrl)
+    
     // State for page counting
     var pageCount by remember { androidx.compose.runtime.mutableIntStateOf(0) }
     var currentPage by remember { androidx.compose.runtime.mutableIntStateOf(1) }
@@ -65,34 +39,14 @@ fun PdfViewScreen(bookUrl: String) {
             .statusBarsPadding(), // Fix status bar overlap
         contentAlignment = Alignment.Center
     ) {
-        if (isLoading) {
-            androidx.compose.foundation.layout.Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
-            ) {
-                androidx.compose.material3.CircularProgressIndicator()
-                androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(8.dp))
-                androidx.compose.material3.Text("Downloading ${downloadProgress.toInt()}%")
-                androidx.compose.foundation.layout.Spacer(modifier = Modifier.padding(4.dp))
-                androidx.compose.material3.LinearProgressIndicator(
-                    progress = { downloadProgress / 100f },
-                )
-            }
-        } else if (errorMessage != null) {
-            androidx.compose.material3.Text(
-                text = errorMessage!!,
-                color = androidx.compose.material3.MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(16.dp)
-            )
-        } else if (downloadedFile != null) {
-            androidx.compose.ui.viewinterop.AndroidView(
+        if (file.exists()) {
+             androidx.compose.ui.viewinterop.AndroidView(
                 modifier = Modifier.fillMaxSize(),
                 factory = { ctx ->
                     com.alamin5g.pdf.PDFView(ctx, null).apply {
-                        fromFile(downloadedFile)
+                        fromFile(file)
                             .swipeHorizontal(false)
                             .enableSwipe(true)
-                            // .scrollHandle(com.alamin5g.pdf.scroll.DefaultScrollHandle(ctx)) // TODO: Fix unresolved reference
                             .onError { t: Throwable ->
                                 android.widget.Toast.makeText(ctx, "Error: ${t.message}", android.widget.Toast.LENGTH_LONG).show()
                             }
@@ -111,7 +65,7 @@ fun PdfViewScreen(bookUrl: String) {
                 }
             )
             
-            // Page Count Overlay
+             // Page Count Overlay
             androidx.compose.foundation.layout.Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -130,6 +84,8 @@ fun PdfViewScreen(bookUrl: String) {
                     )
                 }
             }
+        } else {
+             androidx.compose.material3.Text("File not found: $bookUrl")
         }
     }
 }

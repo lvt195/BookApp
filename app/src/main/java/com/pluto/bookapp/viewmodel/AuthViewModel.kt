@@ -21,19 +21,25 @@ class AuthViewModel @Inject constructor(
     private val _userType = MutableStateFlow<String?>(null)
     val userType: StateFlow<String?> = _userType.asStateFlow()
 
+    private val _isEmailVerified = MutableStateFlow<Boolean>(false)
+    val isEmailVerified: StateFlow<Boolean> = _isEmailVerified.asStateFlow()
+
     fun checkUserStatus() {
         android.util.Log.d("AuthViewModel", "checkUserStatus: Checking user session...")
         if (authRepository.isUserLoggedIn()) {
              android.util.Log.d("AuthViewModel", "checkUserStatus: User is logged in, fetching type...")
              viewModelScope.launch {
                  val type = authRepository.getUserType()
-                 android.util.Log.d("AuthViewModel", "checkUserStatus: Fetched user type: $type")
+                 val verified = authRepository.isEmailVerified()
+                 android.util.Log.d("AuthViewModel", "checkUserStatus: Fetched user type: $type, Verified: $verified")
                  _userType.value = type
+                 _isEmailVerified.value = verified
                  _authState.value = AuthState.Authenticated
              }
         } else {
             android.util.Log.d("AuthViewModel", "checkUserStatus: User is NOT logged in")
             _authState.value = AuthState.Unauthenticated
+            _isEmailVerified.value = false
         }
     }
 
@@ -69,6 +75,18 @@ class AuthViewModel @Inject constructor(
                 _authState.value = AuthState.PasswordResetSent
             } else {
                 _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "Failed to send reset email")
+            }
+        }
+    }
+
+    fun resendVerificationEmail() {
+        viewModelScope.launch {
+            val result = authRepository.resendVerificationEmail()
+            if (result.isSuccess) {
+                 // Optionally notify user of success via a different StateFlow or Effect
+                 android.util.Log.d("AuthViewModel", "Verification email sent")
+            } else {
+                 _authState.value = AuthState.Error(result.exceptionOrNull()?.message ?: "Failed to resend email")
             }
         }
     }

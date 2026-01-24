@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +20,10 @@ import com.pluto.bookapp.viewmodel.PdfDetailViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 import java.net.URLEncoder
+import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @AndroidEntryPoint
 class DashboardUserActivity : ComponentActivity() {
@@ -37,6 +41,10 @@ class DashboardUserActivity : ComponentActivity() {
             val navController = rememberNavController()
             val user = firebaseAuth.currentUser
             val userEmail = user?.email
+            
+            LaunchedEffect(Unit) {
+                authViewModel.checkUserStatus()
+            }
             
             NavHost(navController = navController, startDestination = "dashboard") {
                 composable("dashboard") {
@@ -96,20 +104,38 @@ class DashboardUserActivity : ComponentActivity() {
                     )
                 ) { backStackEntry ->
                     val bookUrl = backStackEntry.arguments?.getString("url") ?: ""
+                    val encodedTitle = backStackEntry.arguments?.getString("title") ?: ""
+                    val encodedDescription = backStackEntry.arguments?.getString("description") ?: ""
                     
+                    val decodedTitle = try {
+                        URLDecoder.decode(encodedTitle, StandardCharsets.UTF_8.toString())
+                    } catch (e: Exception) {
+                        encodedTitle
+                    }
+                    
+                    val decodedDescription = try {
+                         URLDecoder.decode(encodedDescription, StandardCharsets.UTF_8.toString())
+                    } catch (e: Exception) {
+                        encodedDescription
+                    }
+
+                    val isEmailVerified by authViewModel.isEmailVerified.collectAsStateWithLifecycle()
+
                     PdfDetailScreen(
                         viewModel = pdfDetailViewModel,
                         bookId = backStackEntry.arguments?.getString("bookId") ?: "",
-                        bookTitle = backStackEntry.arguments?.getString("title") ?: "",
-                        bookDescription = backStackEntry.arguments?.getString("description") ?: "",
+                        bookTitle = decodedTitle,
+                        bookDescription = decodedDescription,
                         bookUrl = bookUrl,
                         bookTimestamp = backStackEntry.arguments?.getString("timestamp") ?: "",
                         bookDownloads = backStackEntry.arguments?.getString("downloads") ?: "0",
                         bookViews = backStackEntry.arguments?.getString("views") ?: "0",
+                        isEmailVerified = isEmailVerified,
+                        onResendEmail = { authViewModel.resendVerificationEmail() },
                         onBackClick = { navController.popBackStack() },
-                        onReadClick = { 
-                             val encodedUrl = URLEncoder.encode(bookUrl, StandardCharsets.UTF_8.toString())
-                             navController.navigate("view/$encodedUrl") 
+                        onReadClick = { encodedPath ->
+                             // encodedPath is already encoded in PdfDetailScreen
+                             navController.navigate("view/$encodedPath")
                         },
                         onDownloadClick = { url, title ->
                             pdfDetailViewModel.downloadBook(url, title, backStackEntry.arguments?.getString("bookId") ?: "")
@@ -121,8 +147,14 @@ class DashboardUserActivity : ComponentActivity() {
                     "view/{bookUrl}",
                     arguments = listOf(navArgument("bookUrl") { type = NavType.StringType })
                 ) { backStackEntry ->
-                    val url = backStackEntry.arguments?.getString("bookUrl") ?: ""
-                    PdfViewScreen(bookUrl = url)
+                    val encodedUrl = backStackEntry.arguments?.getString("bookUrl") ?: ""
+                    // We need to decode it back to get the file path
+                    val decodedPath = try {
+                        java.net.URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8.toString())
+                    } catch (e: Exception) {
+                        encodedUrl
+                    }
+                    PdfViewScreen(bookUrl = decodedPath)
                 }
             }
         }

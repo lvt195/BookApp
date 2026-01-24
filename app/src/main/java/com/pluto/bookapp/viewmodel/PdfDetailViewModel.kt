@@ -71,6 +71,41 @@ class PdfDetailViewModel @Inject constructor(
         }
     }
 
+    // View State Management
+    sealed class ViewState {
+        object Idle : ViewState()
+        object Loading : ViewState() // Initial check
+        data class Downloading(val progress: Int) : ViewState()
+        data class Ready(val file: java.io.File) : ViewState()
+        data class Error(val message: String) : ViewState()
+    }
+
+    private val _viewState = MutableStateFlow<ViewState>(ViewState.Idle)
+    val viewState: StateFlow<ViewState> = _viewState
+
+    fun resetViewState() {
+        _viewState.value = ViewState.Idle
+    }
+
+    fun openBook(bookId: String, bookUrl: String) {
+        viewModelScope.launch {
+            _viewState.value = ViewState.Loading
+            bookRepository.downloadBookToFile(bookUrl, bookId).collect { status ->
+                when (status) {
+                    is BookRepository.DownloadStatus.Progress -> {
+                        _viewState.value = ViewState.Downloading(status.percentage)
+                    }
+                    is BookRepository.DownloadStatus.Success -> {
+                        _viewState.value = ViewState.Ready(status.file)
+                    }
+                    is BookRepository.DownloadStatus.Error -> {
+                        _viewState.value = ViewState.Error(status.message)
+                    }
+                }
+            }
+        }
+    }
+
     fun downloadBook(bookUrl: String, bookTitle: String, bookId: String) {
         viewModelScope.launch {
             bookRepository.downloadBook(bookUrl, bookTitle, bookId)

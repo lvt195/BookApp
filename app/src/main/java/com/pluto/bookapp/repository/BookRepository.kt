@@ -318,6 +318,65 @@ class BookRepository @Inject constructor(
         awaitClose { ref.removeEventListener(listener) }
     }
 
+    fun getPdfFile(bookId: String): java.io.File {
+        val filename = "$bookId.pdf"
+        return java.io.File(context.getExternalFilesDir(android.os.Environment.DIRECTORY_DOWNLOADS), filename)
+    }
+
+    // Download with progress flow
+    fun downloadBookToFile(bookUrl: String, bookId: String): Flow<DownloadStatus> = callbackFlow {
+        try {
+            val file = getPdfFile(bookId)
+            if (file.exists()) {
+                trySend(DownloadStatus.Success(file))
+                close()
+                return@callbackFlow
+            }
+
+            val storageReference = firebaseStorage.getReferenceFromUrl(bookUrl)
+            
+            val task = storageReference.getFile(file)
+            task.addOnProgressListener { snapshot ->
+                val progress = if (snapshot.totalByteCount > 0) {
+                    (100f * snapshot.bytesTransferred) / snapshot.totalByteCount
+                } else {
+                    0f
+                }
+                trySend(DownloadStatus.Progress(progress.toInt()))
+            }
+            
+            task.addOnSuccessListener {
+                trySend(DownloadStatus.Success(file))
+                close()
+            }
+            
+            task.addOnFailureListener {
+                trySend(DownloadStatus.Error(it.message ?: "Download failed"))
+                close()
+            }
+            
+            awaitClose { 
+                // task.cancel() // Optional: cancel if flow is cancelled
+            }
+        } catch (e: Exception) {
+            trySend(DownloadStatus.Error(e.message ?: "Unknown error"))
+            close()
+        }
+    }
+
+    sealed class DownloadStatus {
+        data class Progress(val percentage: Int) : DownloadStatus()
+        data class Success(val file: java.io.File) : DownloadStatus()
+        data class Error(val message: String) : DownloadStatus()
+    }
+
+    // Keep existing downloadBook for Public Downloads (Export) if needed, 
+    // or we can remove it if "Download" button also just saves to internal? 
+    // User asked "if it is downloading, show dialog".
+    // Existing downloadBook uses DownloadManager which shows notification but not in-app dialog directly linked to View.
+    // Let's keep existing for "Export" feature if user wants file in "Downloads" folder public.
+    // But for "Read", we use the new internal logic.
+    
     suspend fun downloadBook(bookUrl: String, bookTitle: String, bookId: String) {
         try {
             val filename = "$bookId.pdf"
@@ -338,6 +397,7 @@ class BookRepository @Inject constructor(
             e.printStackTrace()
         }
     }
+
     
     private suspend fun incrementDownloadCount(bookId: String) {
         try {

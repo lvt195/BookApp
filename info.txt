@@ -1,0 +1,163 @@
+
+# Google Play Console Submission Info for Pluto BookApp
+
+Use this information to fill out the forms in the Google Play Console.
+
+## 1. Main Store Listing
+
+**App Name:**
+Pluto Reader
+
+**Short Description (Max 80 characters):**
+Read your favorite books, view PDFs, and join the community discussion.
+
+**Full Description (Max 4000 characters):**
+Pluto BookApp is your ultimate digital library companion. Designed for book lovers, this app offers a seamless reading experience with a powerful PDF viewer and vibrant community features.
+
+**Key Features:**
+*   **Comprehensive PDF Viewer:** Read books and documents with ease using our integrated PDF reader.
+*   **Discover Books:** Browse a curated list of books and find your next great read.
+*   **Join the Community:** Leave comments, share your thoughts, and discuss books with other users.
+*   **User Profiles:** Create your profile, manage your details, and track your interactions.
+*   **Secure Access:** Safe login and registration powered by Firebase authentication.
+*   **Offline Support:** Download books to read them anytime, anywhere.
+
+Experience a new way to read and connect. Download Pluto BookApp today!
+
+**Graphics Requirements (You need to create these):**
+*   **App Icon:** 512 x 512 px, 32-bit PNG.
+*   **Feature Graphic:** 1024 x 500 px, JPG or 24-bit PNG.
+*   **Phone Screenshots:** 2-8 screenshots (Aspect ratio 16:9 or 9:16 recommended).
+*   **Tablet Screenshots:** Optional but recommended if you support tablets (7-inch and 10-inch).
+
+---
+
+## 2. Store Settings
+
+*   **App or Game:** App
+*   **Category:** Books & Reference
+*   **Tags (Optional):** Books, Education, PDF Reader, Social.
+
+**Store Listing Contact Details:**
+*   **Email Address:** [YOUR_SUPPORT_EMAIL@EXAMPLE.COM] (Required)
+*   **Phone Number:** (Optional)
+*   **Website:** (Optional)
+
+---
+
+## 3. App Content (Policy Declarations)
+
+**Privacy Policy:**
+*   **URL:** [INSERT_YOUR_PRIVACY_POLICY_URL_HERE]
+    *   *Note: You MUST provide a privacy policy URL since your app collects personal data (Email, Name, Photos).*
+
+**Ads:**
+*   *Does your app contain ads?* -> **No** (Unless you plan to add AdMob, select No).
+
+**App Access:**
+*   *All functionalities are available without special access* OR *Users need to sign in*.
+    *   Select: **All or some functionality is restricted**.
+    *   Instructions: Provide a test account email and password (e.g., `testuser@example.com` / `password123`) so Google reviewers can log in.
+
+**Content Ratings:**
+*   Fill out the questionnaire.
+    *   Category: Reference, News, or Educational.
+    *   Violence/Sexuality: No.
+    *   User Interaction: Yes (Users can comment/interact).
+    *   Online Content: Yes.
+
+**Target Audience:**
+*   Recommended: **13+** or **16+** or **18+**.
+    *   *Why?* Because there is user-generated content (comments).
+    *   *Appeal to Children?* -> **No**.
+
+**News Apps:**
+*   *Is your app a news app?* -> **No**.
+
+**COVID-19 Contact Tracing:**
+*   *Is my app a COVID-19 app?* -> **My app is not a publicly available COVID-19 contact tracing or status app**.
+
+**Data Safety (Very Important):**
+*   **Does your app collect or share any of the required user data types?** -> **Yes**.
+*   **Is all user data collected by your app encrypted in transit?** -> **Yes** (Firebase uses HTTPS).
+*   **Do you provide a way for users to request that their data be deleted?** -> **Yes** (Requirement for Firebase Auth apps).
+
+**Data Types to Declare:**
+1.  **Personal Info -> Name:** Collected? Yes. Share? No. Purpose? App functionality, Account management.
+2.  **Personal Info -> Email Address:** Collected? Yes. Share? No. Purpose? App functionality, Account management.
+3.  **Personal Info -> User IDs:** Collected? Yes. Share? No. Purpose? App functionality.
+4.  **Photos and Videos -> Photos:** Collected? Yes (Profile pictures). Share? No. Purpose? App functionality.
+5.  **App Activity -> App interactions:** Collected? Yes (Comments, Views, Downloads). Share? No. Purpose? Analytics, specific app features.
+
+**Government Apps:**
+*   *Is your app developed by or on behalf of a government?* -> **No**.
+
+**Financial Features:**
+*   *Does your app provide financial features?* -> **No**.
+
+---
+
+## 4. Release Information
+
+**Artifact:**
+*   Upload your `.aab` (Android App Bundle) file located in `app/build/outputs/bundle/release/`.
+
+**Version Details:**
+*   **Platform:** Android
+*   **Version Code:** 1
+*   **Version Name:** 1.0
+*   **Release Name:** 1.0 (Initial Release)
+*   **Release Notes:**
+    *   Initial release of Pluto Reader.
+    *   Read PDF books.
+    *   User comments and profiles.
+
+---
+
+## 5. Other Requirements
+*   **Testers:** It is highly recommended to run an **Internal Test** or **Closed Production Test** first relevant to the new "20 Testers" rule for personal accounts. You need 20 testers opted-in for 14 days before you can apply for Production access.
+
+---
+
+## 6. Firebase Specific Declarations (Add this to Data Safety & Privacy Policy)
+
+Since you are using **Firebase Auth, Firestore, Database, Storage, and App Check**, you must declare the following:
+
+### A. Data Safety Form (Detailed Breakdown)
+
+When asked **"Does your app collect or share any of the required user data types?"**, select **Yes**.
+
+**1. Personal Information**
+*   **Email Address** (Collected, Ephemeral processing, App functionality, Account management)
+    *   *Source:* Firebase Authentication.
+*   **User IDs** (Collected, App functionality, Account management)
+    *   *Source:* Firebase Authentication (UIDs).
+
+**2. Photo and Videos**
+*   **Photos** (Collected, App functionality)
+    *   *Source:* Firebase Storage (Profile images).
+
+**3. App Info and Performance**
+*   **Device or other IDs** (Collected, App functionality, Fraud prevention, security, and compliance)
+    *   *Source:* Firebase App Check & Auth. (Used to verify device integrity).
+
+### B. Privacy Policy Additions
+
+You **MUST** add these clauses to your Privacy Policy URL page:
+
+> **Service Providers**
+> We use the following third-party services to facilitate our Service:
+>
+> *   **Google Firebase:** We use Firebase services provided by Google.
+>     *   **Firebase Authentication:** To manage user accounts securely.
+>     *   **Cloud Firestore & Realtime Database:** To store and sync user data (comments, book details) in real-time.
+>     *   **Cloud Storage for Firebase:** To store user-uploaded content such as profile pictures.
+>     *   **Firebase App Check:** To protect our API resources from abuse by preventing unauthorized clients from accessing our backend resources.
+>
+> For more information on how Google Firebase handles user data, please visit the [Google Privacy Policy](https://policies.google.com/privacy).
+
+### C. App Check Specifics
+*   If you encounter issues with "Unverified App" or API limits, ensure you have registered your **SHA-256 fingerprint** in the Firebase Console Project Settings.
+*   For the Play Console, typically App Check doesn't require extra tick-boxes outside of "Device or other IDs" in Data Safety for security purposes.
+
+
